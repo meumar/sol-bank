@@ -22,8 +22,8 @@ const Balance = () => {
     const response = await fetch(`/api/balance/${publicKey.toBase58()}`);
     const { balance, borrow } = await response.json();
 
-    setbalance(balance);
-    setLoan(borrow);
+    setbalance(balance || 0);
+    setLoan(borrow || 0);
   };
 
   return (

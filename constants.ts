@@ -16,7 +16,6 @@ export const TOKENS = [
 
 export const ADMIN_ADDRESS = "BZuM89a8de8vMxCRPsWFV11a7znFkdy4miVwTGWgH1Hu";
 
-export const API_END_POINT = "http://localhost:3000";
 
 export const BASE_INTEREST_RATE = 5;
 

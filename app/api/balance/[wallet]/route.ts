@@ -1,5 +1,4 @@
-import { TOKENS, API_END_POINT } from "@/constants";
-import { fromDecimals, lamportsToSol, toDecimals } from "@/utils";
+import { fromDecimals } from "@/utils";
 
 const GET = async (
   request: Request,
@@ -8,8 +7,8 @@ const GET = async (
   try{
     const wallet = params.wallet;
     const [response1, response2] = await Promise.all([
-      fetch(`${API_END_POINT}/api/supply?type=supply`, { cache: "no-store" }),
-      fetch(`${API_END_POINT}/api/supply?type=loan`, { cache: "no-store" }),
+      fetch(`${process.env.API_END_POINT}/api/supply?type=supply`, { cache: "no-store" }),
+      fetch(`${process.env.API_END_POINT}/api/supply?type=loan`, { cache: "no-store" }),
     ]);
   
     const supply = await response1.json();
@@ -26,7 +25,7 @@ const GET = async (
     let prices: any = {};
     await Promise.all(
       userTokens.map(async (token: any) => {
-        const res = await fetch(`${API_END_POINT}/api/price/${token}`);
+        const res = await fetch(`${process.env.API_END_POINT}/api/price/${token}`);
         const price = await res.json();
         prices[token] = price;
         return token;
