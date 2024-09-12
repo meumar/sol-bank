@@ -5,13 +5,15 @@ const AmountComponent = ({
   enterAmount,
   isInvalid = false,
   amountMessage = "",
-  disabled = false
+  disabled = false,
+  id
 }: {
   amount: any;
   enterAmount: any;
   isInvalid: boolean;
   amountMessage: string;
-  disabled: boolean
+  disabled: boolean,
+  id: string
 }) => {
   return (
     <main>
@@ -19,6 +21,7 @@ const AmountComponent = ({
         type="number"
         variant="bordered"
         value={amount}
+        id={id}
         onChange={(evt) => {
           enterAmount(Number(evt.target.value));
         }}

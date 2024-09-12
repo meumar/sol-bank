@@ -41,7 +41,9 @@ const filterWallets = async (filterWallets: any, accountType: any) => {
           if (!accountType || accountType.toUpperCase() == type) {
             accounts.push(data);
           }
-        } catch (e) {}
+        } catch (e) {
+          console.log("filterWallets: ", e);
+        }
         return pubkey;
       })
     );
@@ -52,7 +54,7 @@ const filterWallets = async (filterWallets: any, accountType: any) => {
 };
 
 const GET = async (request: Request) => {
-  try {
+  try{
     const type = request.url.split("type=")[1];
 
     const config: GetProgramAccountsConfig = {
@@ -70,9 +72,9 @@ const GET = async (request: Request) => {
       config
     );
     let filteredAccounts = await filterWallets(accounts, type);
-    return Response.json(filteredAccounts);
-  } catch (e) {
-    return Response.json([]);
+    return new Response(JSON.stringify(filteredAccounts));
+  }catch(e){
+    return new Response(JSON.stringify([]));
   }
 };
 

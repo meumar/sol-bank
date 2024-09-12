@@ -120,8 +120,6 @@ const TokenTable = forwardRef((props, ref) => {
       case "name":
         return <TokenDetails token={token}></TokenDetails>;
       case "your_balance":
-        const supply = token.your_supply;
-        const loan = token.your_loan;
         return (
           <div className="flex flex-col gap-1">
             <Chip
@@ -129,9 +127,9 @@ const TokenTable = forwardRef((props, ref) => {
               className="text-bold text-sm capitalize"
               size="sm"
             >
-              {supply > 0 ? "+" : ""}
+              {token.your_supply > 0 ? "+" : ""}
               {getDecimalValue(
-                fromDecimals(supply, token.decimals),
+                fromDecimals(token.your_supply, token.decimals),
                 token.decimals
               )}{" "}
               {token.symbol}
@@ -141,9 +139,9 @@ const TokenTable = forwardRef((props, ref) => {
               className="text-bold text-sm capitalize"
               size="sm"
             >
-              {loan > 0 ? "-" : ""}
+              {token.your_loan > 0 ? "-" : ""}
               {getDecimalValue(
-                fromDecimals(loan, token.decimals),
+                fromDecimals(token.your_loan, token.decimals),
                 token.decimals
               )}{" "}
               {token.symbol}
@@ -218,5 +216,7 @@ const TokenTable = forwardRef((props, ref) => {
     </main>
   );
 });
+
+TokenTable.displayName = "TokenTable";
 
 export default TokenTable;

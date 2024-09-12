@@ -5,24 +5,24 @@ const GET = async (
   request: Request,
   { params }: { params: { wallet: string } }
 ) => {
-  try {
+  try{
     const wallet = params.wallet;
     const [response1, response2] = await Promise.all([
       fetch(`${API_END_POINT}/api/supply?type=supply`, { cache: "no-store" }),
       fetch(`${API_END_POINT}/api/supply?type=loan`, { cache: "no-store" }),
     ]);
-
+  
     const supply = await response1.json();
     const loan = await response2.json();
-
+  
     const userSupply = supply.filter((s: any) => s.user == wallet);
     const userLoan = loan.filter((s: any) => s.user == wallet);
-
+  
     const userTokens = [
       ...Array.from(new Set(userSupply.flatMap((t: any) => t.mint))),
       ...Array.from(new Set(userLoan.flatMap((t: any) => t.mint))),
     ];
-
+  
     let prices: any = {};
     await Promise.all(
       userTokens.map(async (token: any) => {
@@ -32,7 +32,7 @@ const GET = async (
         return token;
       })
     );
-
+  
     let balance = 0,
       borrow = 0;
     userSupply.map((sup: any) => {
@@ -40,16 +40,16 @@ const GET = async (
       balance += value;
       return sup;
     });
-
+  
     userLoan.map((sup: any) => {
       let value = fromDecimals(sup.amount, 2) * prices[sup.mint];
       borrow += value;
       return sup;
     });
-
+  
     return new Response(JSON.stringify({ balance, borrow }));
-  } catch (e) {
-    return Response.json(0);
+  }catch(e){
+    return new Response(JSON.stringify({}));
   }
 };
 

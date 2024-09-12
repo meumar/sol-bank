@@ -337,19 +337,21 @@ const InteractWithWallet = ({
               </ModalHeader>
               <ModalBody>
                 <div className="text-gray-50">
-                  <label>{type !== "SUPPLY" && "Borrow " + "Token"}</label>
+                  <label htmlFor="token">{type !== "SUPPLY" && "Borrow " + "Token"}</label>
                   <TokenSelect
                     selectedMint={mint}
                     selectMint={setMint}
                     disableTokens={[collateralMint]}
+                    id="token"
                   ></TokenSelect>
-                  <label>{type !== "SUPPLY" && "Borrow " + "Amount"}</label>
+                  <label htmlFor="amount">{type !== "SUPPLY" && "Borrow " + "Amount"}</label>
                   <AmountComponent
                     amount={amount}
                     enterAmount={setAmount}
                     isInvalid={isInvalid}
                     amountMessage={amountMessage}
                     disabled={false}
+                    id="amount"
                   ></AmountComponent>
                   <p className="text-default-500 text-small mb-5">
                     {amountMessage && amount && mint && !isInvalid
@@ -358,19 +360,21 @@ const InteractWithWallet = ({
                   </p>
                   {type !== "SUPPLY" && (
                     <>
-                      <label>Collateral Token</label>
+                      <label htmlFor="col_token">Collateral Token</label>
                       <TokenSelect
                         selectedMint={collateralMint}
                         selectMint={setCollateralMint}
                         disableTokens={[mint]}
+                        id="col_token"
                       ></TokenSelect>
-                      <label>{`Collateral Amount Needed (${interestRate}%)`}</label>
+                      <label htmlFor="col_amount">{`Collateral Amount Needed (${interestRate}%)`}</label>
                       <AmountComponent
                         amount={collateral}
                         enterAmount={setCollateral}
                         isInvalid={false}
                         amountMessage={colAmountMessage}
                         disabled={true}
+                        id="col_amount"
                       ></AmountComponent>
                       <p className="text-default-500 text-small mb-5">
                         {colAmountMessage &&

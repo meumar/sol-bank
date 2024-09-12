@@ -2,16 +2,18 @@ import { useContext } from "react";
 import { Select, SelectItem } from "@nextui-org/select";
 
 import TokenDetails from "./TokenDetails";
-import TokenContext from "../../context/TokensContext/TokenDetailsContext";
+import TokenContext from "@/context/TokensContext/TokenDetailsContext";
 
 const TokenSelect = ({
   selectedMint,
   selectMint,
   disableTokens = [],
+  id
 }: {
   selectedMint: string;
   selectMint: any;
   disableTokens: any[];
+  id: string
 }) => {
   const tokens: any = useContext(TokenContext);
 
@@ -24,6 +26,7 @@ const TokenSelect = ({
         className="text-gray-950 mb-5"
         placeholder="Select an token"
         value={selectedMint}
+        id={id}
         onChange={(ent) => {
           selectMint(ent.target.value);
         }}
