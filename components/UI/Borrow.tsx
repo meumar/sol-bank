@@ -25,7 +25,7 @@ import { PiEmptyThin } from "react-icons/pi";
 const Borrow = () => {
   //State variables
   const [borrows, setBorrows] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //Program variables
   const { publicKey }: any = useWallet();
@@ -46,10 +46,12 @@ const Borrow = () => {
 
   //Methods
   const fetchSupplies = async () => {
+    setLoading(true);
     const response = await fetch(`/api/supply?type=loan`);
     const borrows = await response.json();
     const tokens = tokenObject();
     prepareSupplies(borrows, tokens);
+    setLoading(false);
   };
 
   const tokenObject = () => {
@@ -79,7 +81,9 @@ const Borrow = () => {
       );
       return token;
     });
-    setBorrows(mappedTokens);
+    setBorrows(
+      mappedTokens.filter((e: any) => e.user == publicKey?.toBase58())
+    );
   };
 
   const repayLoanAmount = async (tran: any) => {
@@ -151,73 +155,69 @@ const Borrow = () => {
           {loading && <LoadingComponent />}
           {!loading && (
             <div className="text-base">
-              {[...(borrows || [])]
-                .filter((e: any) => e.user == publicKey?.toBase58())
-                .map((tran: any) => (
-                  <div
-                    key={tran.address}
-                    className="flex flex-row px-2 text-gray-100 items-center gap-5"
-                  >
-                    <div className="flex gap-5 border rounded-xl border-slate-600 p-3 w-2/5">
-                      <TokenDetails token={tran.mint_details}></TokenDetails>
-                      <Chip
-                        color={"success"}
-                        className="text-bold text-sm capitalize mt-3"
-                        size="sm"
-                      >
-                        {"+"}
-                        {fromDecimals(
-                          tran.amount,
-                          tran.mint_details.decimals
-                        )}{" "}
-                        {tran.mint_details.symbol}
-                      </Chip>
-                    </div>
-                    <div className="w-28">
-                      <MdCurrencyExchange className="text-3xl ml-4" />
-                      <span className="text-sm text-red-400">
-                        {tran.interest_rate}% montly
-                      </span>
-                    </div>
-                    <div className="flex gap-5 border rounded-xl border-slate-600 p-3 w-2/5">
-                      <TokenDetails
-                        token={tran.col_mint_details}
-                      ></TokenDetails>
-                      <Chip
-                        color={"danger"}
-                        className="text-bold text-sm capitalize mt-3"
-                        size="sm"
-                      >
-                        {"-"}
-                        {fromDecimals(
-                          tran.coll_amount,
-                          tran.col_mint_details.decimals
-                        )}{" "}
-                        {tran.col_mint_details.symbol}
-                      </Chip>
-                    </div>
-                    <div className="text-sm w-1/5">
-                      <h3 className="font-light">Borrowed on</h3>
-                      <span className="font-extralight text-gray-500">
-                        {tran.timestamp}
-                      </span>
-                    </div>
-                    <div className="text-sm w-1/5">
-                      <Button
-                        color="primary"
-                        size="lg"
-                        onClick={() => repayLoanAmount(tran)}
-                      >
-                        Pay{" "}
-                        {fromDecimals(
-                          tran.payble_amount,
-                          tran.mint_details.decimals
-                        )}{" "}
-                        {tran.mint_details.symbol}
-                      </Button>
-                    </div>
+              {[...(borrows || [])].map((tran: any) => (
+                <div
+                  key={tran.address}
+                  className="flex flex-row px-2 text-gray-100 items-center gap-5"
+                >
+                  <div className="flex gap-5 border rounded-xl border-slate-600 p-3 w-2/5">
+                    <TokenDetails token={tran.mint_details}></TokenDetails>
+                    <Chip
+                      color={"success"}
+                      className="text-bold text-sm capitalize mt-3"
+                      size="sm"
+                    >
+                      {"+"}
+                      {fromDecimals(
+                        tran.amount,
+                        tran.mint_details.decimals
+                      )}{" "}
+                      {tran.mint_details.symbol}
+                    </Chip>
                   </div>
-                ))}
+                  <div className="w-28">
+                    <MdCurrencyExchange className="text-3xl ml-4" />
+                    <span className="text-sm text-red-400">
+                      {tran.interest_rate}% montly
+                    </span>
+                  </div>
+                  <div className="flex gap-5 border rounded-xl border-slate-600 p-3 w-2/5">
+                    <TokenDetails token={tran.col_mint_details}></TokenDetails>
+                    <Chip
+                      color={"danger"}
+                      className="text-bold text-sm capitalize mt-3"
+                      size="sm"
+                    >
+                      {"-"}
+                      {fromDecimals(
+                        tran.coll_amount,
+                        tran.col_mint_details.decimals
+                      )}{" "}
+                      {tran.col_mint_details.symbol}
+                    </Chip>
+                  </div>
+                  <div className="text-sm w-1/5">
+                    <h3 className="font-light">Borrowed on</h3>
+                    <span className="font-extralight text-gray-500">
+                      {tran.timestamp}
+                    </span>
+                  </div>
+                  <div className="text-sm w-1/5">
+                    <Button
+                      color="primary"
+                      size="lg"
+                      onClick={() => repayLoanAmount(tran)}
+                    >
+                      Pay{" "}
+                      {fromDecimals(
+                        tran.payble_amount,
+                        tran.mint_details.decimals
+                      )}{" "}
+                      {tran.mint_details.symbol}
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           {!borrows.length && !loading && (

@@ -26,7 +26,7 @@ import TokenContext from "@/context/TokensContext/TokenDetailsContext";
 const Supply = () => {
   //State variables
   const [supplies, setSupplies] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //Program variables
   const program = useProgram();
@@ -51,7 +51,6 @@ const Supply = () => {
     const supplies = await response.json();
     const tokens = tokenObject();
     prepareSupplies(supplies, tokens);
-
     setLoading(false);
   };
 
@@ -80,7 +79,9 @@ const Supply = () => {
       );
       return token;
     });
-    setSupplies(mappedTokens);
+    setSupplies(
+      mappedTokens.filter((e: any) => e.user == publicKey?.toBase58())
+    );
   };
 
   const withdrawAmount = async (tran: any) => {
@@ -134,52 +135,50 @@ const Supply = () => {
           {loading && <LoadingComponent />}
           {!loading && (
             <div className="text-base">
-              {[...(supplies || [])]
-                .filter((e: any) => e.user == publicKey?.toBase58())
-                .map((tran: any) => (
-                  <div
-                    key={tran.address}
-                    className="flex flex-row gap-5 py-1 px-2 text-gray-100 "
-                  >
-                    <div className="basis-1/4">
-                      <TokenDetails token={tran.mint_details}></TokenDetails>
-                    </div>
-                    <div className="basis-1/4 text-right">
-                      <Chip
-                        color={tran.type == "SUPPLY" ? "success" : "danger"}
-                        className="text-bold text-sm capitalize"
-                        size="sm"
-                      >
-                        {tran.type == "SUPPLY" ? "+" : "-"}
-                        {fromDecimals(
-                          tran.amount,
-                          tran.mint_details.decimals
-                        )}{" "}
-                        {tran.mint_details.symbol}
-                      </Chip>
-                    </div>
-                    <div className="text-sm w-1/5">
-                      <h3 className="font-light">Supplied on</h3>
-                      <span className="font-extralight text-gray-500">
-                        {tran.timestamp}
-                      </span>
-                    </div>
-                    <div className="text-sm w-1/5">
-                      <Button
-                        color="primary"
-                        size="sm"
-                        onClick={() => withdrawAmount(tran)}
-                      >
-                        Withdraw{" "}
-                        {fromDecimals(
-                          tran.payble_amount,
-                          tran.mint_details.decimals
-                        )}{" "}
-                        {tran.mint_details.symbol}
-                      </Button>
-                    </div>
+              {[...(supplies || [])].map((tran: any) => (
+                <div
+                  key={tran.address}
+                  className="flex flex-row gap-5 py-1 px-2 text-gray-100 "
+                >
+                  <div className="basis-1/4">
+                    <TokenDetails token={tran.mint_details}></TokenDetails>
                   </div>
-                ))}
+                  <div className="basis-1/4 text-right">
+                    <Chip
+                      color={tran.type == "SUPPLY" ? "success" : "danger"}
+                      className="text-bold text-sm capitalize"
+                      size="sm"
+                    >
+                      {tran.type == "SUPPLY" ? "+" : "-"}
+                      {fromDecimals(
+                        tran.amount,
+                        tran.mint_details.decimals
+                      )}{" "}
+                      {tran.mint_details.symbol}
+                    </Chip>
+                  </div>
+                  <div className="text-sm w-1/5">
+                    <h3 className="font-light">Supplied on</h3>
+                    <span className="font-extralight text-gray-500">
+                      {tran.timestamp}
+                    </span>
+                  </div>
+                  <div className="text-sm w-1/5">
+                    <Button
+                      color="primary"
+                      size="sm"
+                      onClick={() => withdrawAmount(tran)}
+                    >
+                      Withdraw{" "}
+                      {fromDecimals(
+                        tran.payble_amount,
+                        tran.mint_details.decimals
+                      )}{" "}
+                      {tran.mint_details.symbol}
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           {!supplies.length && !loading && (
